@@ -26,14 +26,11 @@ int main() {
   pq->push(17);
 
   for (int i = 0; i < 10; i++) {
-    PQueueU8Value ret = pq->pop();
-    switch (ret.status) {
-    case PQueueU8Status::Success:
-      std::cout << std::to_string(ret.value) << std::endl;
-      break;
-    case PQueueU8Status::Empty:
-      std::cout << "Nothing" << std::endl;
-      break;
+    try {
+      const uint8_t value = pq->pop();
+      std::cout << std::to_string(value) << std::endl;
+    } catch (const rust::Error &e) {
+      std::cerr << "pop error: " << e.what() << std::endl;
     }
   }
 }
