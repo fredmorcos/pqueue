@@ -1,17 +1,5 @@
 #[cxx::bridge]
 mod ffi {
-    #[derive(Clone, Copy, PartialEq, Eq)]
-    pub enum PQueueU8Status {
-        Success = 0,
-        Empty = 1,
-    }
-
-    #[derive(Clone, Copy, PartialEq, Eq)]
-    pub struct PQueueU8Value {
-        status: PQueueU8Status,
-        value: u8,
-    }
-
     extern "Rust" {
         type PQueueU8;
 
@@ -20,7 +8,7 @@ mod ffi {
 
         // Methods
         fn push(self: &mut PQueueU8, element: u8);
-        fn pop(self: &mut PQueueU8) -> PQueueU8Value;
+        fn pop(self: &mut PQueueU8) -> Result<u8>;
     }
 }
 
@@ -36,18 +24,12 @@ fn pqueue_u8_new(elements: &[u8]) -> Box<PQueueU8> {
     Box::new(pqueue)
 }
 
-use ffi::{PQueueU8Value, PQueueU8Status};
-
 impl PQueueU8 {
     fn push(&mut self, element: u8) {
         self.0.push(element);
     }
 
-    fn pop(&mut self) -> PQueueU8Value {
-        if let Some(value) = self.0.pop() {
-            PQueueU8Value { status: PQueueU8Status::Success, value }
-        } else {
-            PQueueU8Value { status: PQueueU8Status::Empty, value: 0 }
-        }
+    fn pop(&mut self) -> Result<u8, &'static str> {
+        self.0.pop().ok_or("queue is empty")
     }
 }
