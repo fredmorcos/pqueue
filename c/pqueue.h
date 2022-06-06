@@ -1,23 +1,26 @@
-#pragma once
-
+#include <stdarg.h>
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
+#include <stdlib.h>
 
-struct PQueueU8;
-
-enum PQueueU8Status {
+typedef enum PQueueU8Status {
   PQueueU8Status_Success = 0,
   PQueueU8Status_Empty = 1,
   PQueueU8Status_InvalidArgument = -1,
-};
+} PQueueU8Status;
 
-struct PQueueU8Value {
+typedef struct PQueueU8 PQueueU8;
+
+typedef struct PQueueU8Value {
   enum PQueueU8Status status;
   uint8_t value;
-};
+} PQueueU8Value;
 
-struct PQueueU8 *pqueue_u8_new(const uint8_t *const elements, const size_t len);
-enum PQueueU8Status pqueue_u8_push(struct PQueueU8 *const pqueue, const uint8_t element);
-struct PQueueU8Value pqueue_u8_pop(struct PQueueU8 *const pqueue);
-void pqueue_u8_free(struct PQueueU8 *pqueue);
+struct PQueueU8 *pqueue_u8_new(const uint8_t *elements, size_t len);
+
+struct PQueueU8Value pqueue_u8_pop(struct PQueueU8 *pqueue);
+
+enum PQueueU8Status pqueue_u8_push(struct PQueueU8 *pqueue, uint8_t element);
+
+void pqueue_u8_free(struct PQueueU8 *_pqueue);
